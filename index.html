@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>倒排序-粘贴入excel</title>
+    <script type="text/javascript" src="https://www.eegem.com/static/js/jquery-1.8.3.min.js"></script>
+    <style type="text/css">
+        #header,#content{
+            border:solid 1px #666;
+            padding:10px;
+            margin:0 auto;
+        }
+        #header{width:500px}
+        #content{width:500px;}
+        #nos{margin:0 auto;}
+        .btn {
+          padding: 2px 5px;
+          cursor: pointer;
+          color: #FFFFFF;
+          background-color: #4D90FE;
+          border: 1px solid #3079ED;
+          text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+        }
+        .txt{
+          margin-top:15px;
+        }
+        .pop_tip {
+    z-index: 20002;
+    left: 0;
+    top: 0;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    display: none;
+    background: #000;
+    color: #FFF;
+    padding: 0 20px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    border-radius: 5px;
+}
+    </style>
+</head>
+<body>
+<div id="header">粘贴证书号</div>
+<div id="content">
+  <textarea class="txt txa" cols="96%" rows="15" name="nos" id="nos"></textarea>
+  <div id="opera">
+    <input type="submit" class="btn" id="copyExc" value="粘贴到excel">
+  </div>
+  <textarea class="txt txa" cols="96%" rows="15" name="result" id="result"></textarea>  
+</div>
+<div class="pop_tip" id="kc_pop_tip" style="position: fixed; top: 120px;text-align:center">已成功复制到剪切板</div>
+</body>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#copyExc').click(function(){
+      let t = $('#nos').val();
+      var sorted = sorteds(t,5);
+      if(!isSame(sorted)){
+        sorted = sorteds(t,6);
+      }
+      var str='';
+      sorted.forEach((e,i)=>{if(i%10==0)str+='"\r\n';str+=e+(i%10==9 ? '"' : '"	"')+'\r\n';});
+      $('#result').val(str).select();
+      if (document.execCommand('copy')) {
+          document.execCommand('copy');
+          let scr_wid = window.screen.availWidth;
+          let wid = $('#kc_pop_tip').width();
+		      $('#kc_pop_tip').css('left',scr_wid/2-wid/2).fadeIn(2000).fadeOut(1000);
+	    }
+    });
+    function sorteds(arr,n){
+      return arr.split('\n').map(e=>e.split('').reverse().join('').substring(0,n)).sort((a,b)=>a-b).map(e=>e.split('').reverse().join(''));
+    }
+    function isSame(array){
+      let obj = {}
+      array.forEach(e=>{
+        obj[e] = 5;
+      })
+      return array.length == Object.keys(obj).length;
+    }
+  });
+</script>
+<html>
